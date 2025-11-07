@@ -134,13 +134,23 @@ const glowMaterial = new THREE.MeshBasicMaterial({
 const sunGlow = new THREE.Mesh(glowGeometry, glowMaterial);
 sun.add(sunGlow);
 
-// Lighting
-const sunLight = new THREE.DirectionalLight(0xffffff, 2);
+// Lighting - Enhanced for better Earth visibility
+const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
 sunLight.position.copy(sun.position).normalize().multiplyScalar(500);
 scene.add(sunLight);
 
-const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+// Stronger ambient light for overall illumination
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
 scene.add(ambientLight);
+
+// Additional fill lights to illuminate Earth from multiple angles
+const fillLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+fillLight1.position.set(500, 300, 500);
+scene.add(fillLight1);
+
+const fillLight2 = new THREE.DirectionalLight(0xffffff, 0.6);
+fillLight2.position.set(-500, -200, 300);
+scene.add(fillLight2);
 
 // Dialog functions
 function updateDialog(header, text, images = []) {
