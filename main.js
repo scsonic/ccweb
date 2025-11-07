@@ -44,49 +44,17 @@ function createStarfield() {
 
 createStarfield();
 
-// Create Earth
+// Create Earth with realistic texture
 const earthGeometry = new THREE.SphereGeometry(30, 64, 64);
+const textureLoader = new THREE.TextureLoader();
+
+// Load Earth texture from free NASA/public domain source
+const earthTexture = textureLoader.load('https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/planets/earth_atmos_2048.jpg');
 const earthMaterial = new THREE.MeshPhongMaterial({
-    color: 0x2233ff,
-    emissive: 0x112244,
+    map: earthTexture,
     shininess: 25,
     specular: 0x333333
 });
-
-// Add simple texture-like appearance with a pattern
-const canvas = document.createElement('canvas');
-canvas.width = 1024;
-canvas.height = 512;
-const ctx = canvas.getContext('2d');
-
-// Ocean base
-ctx.fillStyle = '#1a5f7a';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-// Continents (simplified)
-ctx.fillStyle = '#2d8650';
-for (let i = 0; i < 50; i++) {
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height;
-    const size = Math.random() * 150 + 50;
-    ctx.beginPath();
-    ctx.arc(x, y, size, 0, Math.PI * 2);
-    ctx.fill();
-}
-
-// Clouds
-ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-for (let i = 0; i < 100; i++) {
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height;
-    const size = Math.random() * 50 + 20;
-    ctx.beginPath();
-    ctx.arc(x, y, size, 0, Math.PI * 2);
-    ctx.fill();
-}
-
-const earthTexture = new THREE.CanvasTexture(canvas);
-earthMaterial.map = earthTexture;
 
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 earth.name = 'earth';
@@ -132,20 +100,25 @@ satelliteData.forEach((data, index) => {
     scene.add(satellite);
 });
 
-// Create Moon
+// Create Moon with realistic texture
 const moonGeometry = new THREE.SphereGeometry(8, 32, 32);
+const moonTexture = textureLoader.load('https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/planets/moon_1024.jpg');
 const moonMaterial = new THREE.MeshPhongMaterial({
-    color: 0xaaaaaa,
-    emissive: 0x333333
+    map: moonTexture
 });
 const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-moon.position.set(200, 30, 100);
+moon.position.set(300, 50, 150); // Increased distance from Earth
 moon.name = 'moon';
 scene.add(moon);
 
-// Create Sun (with glow effect)
+// Create Sun with realistic texture (with glow effect)
 const sunGeometry = new THREE.SphereGeometry(40, 32, 32);
-const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const sunTexture = textureLoader.load('https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/planets/sun.jpg');
+const sunMaterial = new THREE.MeshBasicMaterial({
+    map: sunTexture,
+    emissive: 0xffff00,
+    emissiveIntensity: 0.5
+});
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 sun.position.set(-800, 200, -400);
 sun.name = 'sun';
@@ -264,9 +237,9 @@ function animate() {
         satellite.rotation.y = -satellite.userData.angle;
     });
 
-    // Slowly rotate moon around Earth
-    moon.position.x = Math.cos(time * 0.05) * 200 + Math.sin(time * 0.03) * 20;
-    moon.position.z = Math.sin(time * 0.05) * 200 + Math.cos(time * 0.03) * 20;
+    // Slowly rotate moon around Earth (increased orbit distance)
+    moon.position.x = Math.cos(time * 0.05) * 300 + Math.sin(time * 0.03) * 30;
+    moon.position.z = Math.sin(time * 0.05) * 300 + Math.cos(time * 0.03) * 30;
 
     controls.update();
     renderer.render(scene, camera);
